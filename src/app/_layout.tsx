@@ -2,6 +2,8 @@ import { Stack } from "expo-router";
 
 import {colors} from "../theme/colors";
 import {useFonts, Inter_400Regular, Inter_500Medium, Inter_700Bold} from "@expo-google-fonts/inter";
+import {Loading} from "@/app/components/Loading";
+
 
 export default function Layout (){
 
@@ -9,7 +11,7 @@ export default function Layout (){
 
 
     if(!fontsLoaded){
-        return
+        return <Loading />
     }
 
     return <Stack
