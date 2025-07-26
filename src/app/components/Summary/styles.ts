@@ -4,22 +4,24 @@ import {colors, fontFamily} from "@/theme";
 
 export const styles = StyleSheet.create({
     container: {
-    gap:5,
+        gap: 8,
+        padding: 4,
     },
     header:{
-        flexDirection:"row",
-        alignItems:"center",
-        gap:5,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 8,
     },
     label:{
-        fontSize:10,
-        color:colors.blue[300],
-        fontFamily: fontFamily.regular,
-
+        fontSize: 12,
+        color: colors.blue[300],
+        fontFamily: fontFamily.medium,
+        letterSpacing: 0.5,
     },
     value:{
-        fontSize:18,
-        color:colors.white,
-        fontFamily: fontFamily.regular,
+        fontSize: 20,
+        color: colors.white,
+        fontFamily: fontFamily.bold,
+        letterSpacing: 0.5,
     }
 })
