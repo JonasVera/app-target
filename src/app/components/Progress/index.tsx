@@ -1,5 +1,5 @@
-import {View, Text} from "react-native";
-import {styles} from "@/app/components/Progress/styles";
+import { View, Text } from "react-native";
+import { styles } from "@/app/components/Progress/styles";
 
 type SaveValue = {
     percentage: number,
@@ -12,10 +12,10 @@ type Props = {
 }
 
 
-export function Progress({data}: Props) {
-    return(
+export function Progress({ data }: Props) {
+    return (
         <View style={styles.container}>
-        <Text style={styles.label}>Valor guardado</Text>
+            <Text style={styles.label}>Valor guardado</Text>
             <View style={styles.status}>
                 <Text style={styles.value}>
                     {data.current}
@@ -25,7 +25,7 @@ export function Progress({data}: Props) {
             </View>
 
             <View style={styles.progress}>
-                <View style={[styles.currentProgress, { width: `${data.percentage}%`}]}></View>
+                <View style={[styles.currentProgress, { width: `${data.percentage}%` }]}></View>
             </View>
-    </View>)
+        </View>)
 }

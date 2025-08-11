@@ -5,6 +5,10 @@ export type TargetCreate = {
     amount: number
 }
 
+export type TargetUpdate = TargetCreate & {
+    id: number
+}
+
 export type TargetResponse = {
     id: number,
     name: string,
@@ -16,19 +20,33 @@ export type TargetResponse = {
 }
 
 
-export function useTargetDatabase(){
+export function useTargetDatabase() {
 
 
     const database = useSQLiteContext()
 
 
+    async function create(data: TargetCreate) {
+        const statemnt = await database.prepareAsync("INSERT INTO targets (name, amount) VALUES ($name, $amount)")
 
-
-    async function create(data:TargetCreate) {
-      const statemnt = await database.prepareAsync("INSERT INTO targets (name, amount) VALUES ($name, $amount)")
-     
-        statemnt.executeAsync({$name: data.name, $amount: data.amount})
+        statemnt.executeAsync({ $name: data.name, $amount: data.amount })
     }
+
+
+    async function update(data: TargetUpdate) {
+        const statemnt = await database.prepareAsync(`UPDATE targets SET
+                name = $name,
+                amount = $amount,
+                updated_at = CURRENT_TIMESTAMP
+                WHERE id = $id`)
+
+        statemnt.executeAsync({
+            $id: data.id,
+            $name: data.name,
+            $amount: data.amount,
+        })
+    }
+
 
     async function listBySavedValue() {
         return await database.getAllAsync<TargetResponse>(`
@@ -43,11 +61,11 @@ export function useTargetDatabase(){
             FROM targets
                 LEFT JOIN transactions ON targets.id = transactions.target_id
             GROUP BY targets.id, targets.name , targets.amount
-            ORDER BY current DESC
+            ORDER BY percentage DESC
             `)
     }
 
-        async function show(id: number) {
+    async function show(id: number) {
         return await database.getFirstAsync<TargetResponse>(`
             SELECT 
                 targets.id,
@@ -63,10 +81,16 @@ export function useTargetDatabase(){
             `)
     }
 
+    async function remove(id: number) {
+        await database.runAsync("DELETE FROM targets WHERE id = ?", id)
+    }
+
 
     return {
         listBySavedValue,
         create,
-        show
+        show,
+        update,
+        remove
     }
 }
