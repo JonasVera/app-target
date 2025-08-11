@@ -7,6 +7,8 @@ import { useCallback,useState } from "react";
 import {router, useFocusEffect } from "expo-router";
 import {StatusBar} from "react-native";
 import {useTargetDatabase, TargetResponse} from "@/database/useTargetDatabase"
+import { Loading } from "./components/Loading";
+import {numberToCurrency} from "@/app/components/Utils/numberToCurrency"; 
 
 const summary = {
     total: "R$ 2.600,00",
@@ -26,7 +28,7 @@ export default function Index(){
     
     const [targets, setTargets] = useState<TargetProps[]>([])
     const targetDatabase = useTargetDatabase();
-
+    const [isFetching, setIsFetching] = useState(true)
 
 
     async function fetchTargets(): Promise<TargetProps[]>{
@@ -35,12 +37,12 @@ export default function Index(){
         const response = await targetDatabase.listBySavedValue()
  
 
-              return response.map((item)=>({
+           return response.map((item)=>({
             id: String(item.id),
             name: item.name,
             current: item.name,
             percentage: item.percentage.toFixed(0) + "%",
-            target: String(item.amount)
+            target: numberToCurrency(item.amount)
         }))
  
      } catch (error) {
@@ -55,6 +57,7 @@ export default function Index(){
        const [targetData] = await Promise.all([targetsDataPromise])
     
        setTargets(targetData)
+       setIsFetching(false)
     }
 
     useFocusEffect(
@@ -62,7 +65,12 @@ export default function Index(){
            fethData()
         },[])
 )
-    
+
+if(isFetching)
+{
+    return <Loading />
+}
+
     return(
         <View style={{flex:1}}>
             <StatusBar barStyle="light-content" />
