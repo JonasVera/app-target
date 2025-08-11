@@ -6,21 +6,22 @@ import {PageHeader} from "@/app/components/PageHeader";
 import {Input} from "@/app/components/Input";
 import {Button} from "@/app/components/Button";
 import {CurrencyInput} from "@/app/components/CurrencyInput";
-
+import { useTargetDatabase } from "@/database/useTargetDatabase";
+ 
 
 export default function Target(){
 const [isProcessing, setProcessing] = useState(false);
 
 const [name, setName] = useState("")
 
-const [amout, setAmout] = useState(0)
+const [amount, setAmount] = useState(0)
 
 const params = useLocalSearchParams<{id?:string}>()
 
+const targetDatabase = useTargetDatabase()
+
 function handleSave() {
-    if(name.trim() || amout <=0){
-        return Alert.alert("Atenção", "Preecha nome e valor!")
-    }   
+ 
     setProcessing(true)
     
 
@@ -34,6 +35,15 @@ function handleSave() {
     }
 
  async function create() {
+    try{
+        await targetDatabase.create({name, amount})
+            Alert.alert("Nova Meta", "Meta criada com sucesso!", [{
+                text: "Ok",
+                onPress: () => router.back(),
+            }])
+    } catch(error) {
+        Alert.alert("Erro", "Não foi possível criar a meta")
+    }
     
  }   
 
@@ -47,7 +57,7 @@ async function update() {
             <PageHeader title="Meta" subtitle="Economize para alcançar sua meta financeira"  />
             <View style={{marginTop:32, gap:24}}>
                 <Input label="Nome da meta" placeholder="Viagem para a praia" value={name} onChangeText={setName} />
-                <CurrencyInput placeholder="Valor alvo" value={amout} label={"Valor alvo"}  onChangeValue={setAmout} />
+                <CurrencyInput placeholder="Valor alvo" value={amount} onChangeValue={setAmount} label={"Valor alvo"}  />
                 <Button title="Salvar" onPress={handleSave} isProcessing={isProcessing}  />
             </View>
 
