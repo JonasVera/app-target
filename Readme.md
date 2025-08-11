@@ -1,0 +1,1 @@
+xcrun simctl get_app_container booted com.jonasdev.target data
